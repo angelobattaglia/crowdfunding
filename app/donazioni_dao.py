@@ -4,13 +4,13 @@ import datetime
 # Operations on comments
 
 # I pass the id of the post and I get all the comments
-def get_comments(id):
-    conn = sqlite3.connect('datas.db')
+def get_donazioni(id):
+    conn = sqlite3.connect('data.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
-    sql = 'SELECT commenti.id, commenti.data_pubblicazione, commenti.testo, commenti.valutazione, commenti.immagine_commento, commenti.id_utente, utenti.nickname, utenti.immagine_profilo FROM commenti LEFT JOIN utenti ON commenti.id_utente = utenti.id WHERE commenti.id_post = ?'
-    cursor.execute(sql, (id,))
+    # sql = 
+    # cursor.execute(sql, (id,))
     comments = cursor.fetchall()
 
     cursor.close()
@@ -19,7 +19,7 @@ def get_comments(id):
     return comments
 
 # I pass the the comment dictionary and I add the comment to the comments table on the DB
-def add_comment(comment):
+def add_donazione(donazione):
     conn = sqlite3.connect('datas.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()

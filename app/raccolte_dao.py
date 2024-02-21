@@ -43,28 +43,32 @@ def add_raccolta(raccolta):
     return success
 
 # ------------------------------------------------
-# -------------Getter methods---------------------
+# -------------Fetching methods-------------------
 # ------------------------------------------------
+import sqlite3
+
 def get_raccolte():
-    conn = sqlite3.connect('datas.db')
+    conn = sqlite3.connect('data.db')
+    # This line makes the rows returned by fetchall() to be in the form of dictionaries
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
-    sql = 'SELECT posts.id, posts.date, posts.text, posts.immagine_post, utenti.nickname, utenti.immagine_profilo FROM posts LEFT JOIN utenti ON posts.id_utente = utenti.id ORDER BY data_pubblicazione DESC'
+    # SQL query to select all records from the "raccolte" table
+    sql = 'SELECT * FROM raccolte'
     cursor.execute(sql)
-    posts = cursor.fetchall()
+    # Fetch all rows as a list of dictionaries
+    raccolte = [dict(row) for row in cursor.fetchall()]
 
     cursor.close()
     conn.close()
 
-    return posts
+    return raccolte
 
 def get_raccolta(id):
     conn = sqlite3.connect('data.db')
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
-    # sql = 'SELECT posts.id, posts.date, posts.text, posts.immagine_post, posts.id_utente, utenti.nickname, utenti.immagine_profilo FROM posts LEFT JOIN utenti ON posts.id_utente = utenti.id WHERE posts.id = ?'
     sql = 'SELECT * FROM raccolte WHERE id = ?'
     cursor.execute(sql, (id,))
     raccolta = cursor.fetchone()
@@ -98,3 +102,39 @@ def get_all_raccolte():
 
     return raccolte
 
+# ------------------------------------------------
+# -----------------Delete Method------------------
+# ------------------------------------------------
+
+import sqlite3
+
+def delete_raccolta(id):
+    # Connettersi al database SQLite
+    con = sqlite3.connect('data.db')
+    # Creare un oggetto cursore
+    cur = con.cursor()
+
+    # Definire la dichiarazione SQL DELETE. Il punto interrogativo (?) è un segnaposto per il valore di id.
+    sql = 'DELETE FROM raccolte WHERE id = ?'
+
+    # La variabile 'success' viene utilizzata per tracciare se l'operazione è stata eseguita con successo
+    success = False
+
+    try:
+        # Eseguire la dichiarazione DELETE, passando l'id per sostituire il segnaposto
+        cur.execute(sql, (id,))
+
+        # Effettuare il commit delle modifiche al database
+        con.commit()
+        success = True
+    except Exception as e:
+        # In caso di eccezione, stampare l'errore e annullare tutte le modifiche
+        print('ERRORE', str(e))
+        con.rollback()
+    finally:
+        # Chiudere il cursore e la connessione
+        cur.close()
+        con.close()
+
+    # Restituire lo stato di successo
+    return success

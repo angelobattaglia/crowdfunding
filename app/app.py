@@ -23,7 +23,7 @@ from PIL import Image
 PROFILE_IMG_HEIGHT = 130
 POST_IMG_WIDTH = 300
 
-# Import the datetime library to handle the pubblication date of the posts
+# Import the datetime library to handle the pubblication date of the raccolte
 import datetime
 
 ## Import the dao modules and the models module
@@ -42,25 +42,27 @@ login_manager.init_app(app)
 
 @app.route('/')
 def home():
-    return render_template('home.html', title='Home')
+    raccolte = []
+    raccolte = raccolte_dao.get_raccolte()
+    return render_template('home.html', raccolte=raccolte, title='Home')
 
 
 #########################################################
 #########################################################
 #########################################################
-###########Poi si fa il post#############################
+###########Poi si fa il post (raccolta)##################
 #########################################################
 #########################################################
 #########################################################
 #########################################################
 
 # Dynamic routing
-@app.route('/post/<int:raccolta_id>')
+@app.route('/raccolta/<int:raccolta_id>')
 def raccolta(raccolta_id):
     raccolte = []
     raccolte = raccolte_dao.get_all_raccolte()
     
-    # Check if the provided post_id is within the valid range
+    # Check if the provided raccolta_id is within the valid range
     if raccolta_id < 1 or raccolta_id > len(raccolte):
         abort(404)  # Post not found, return a 404 error
 
