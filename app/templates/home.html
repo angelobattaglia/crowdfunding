@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+<!--The placeholder {{ title }} then gets replaced by the title from render_template in the definition of the route-->
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+
+ <main class="col-md-10">
+
+    <div class="container">
+        <div class="row">
+        <div class="col-md-12">
+            <h1>Home</h1>
+            <p>This is the home page.</p>
+        </div>
+        </div>
+    </div>
+
+ </main>
+
+ <main class="col-md-10">
+    {% for post in posts_new %}
+    <div class="container my-3">
+        <div class="row border rounded shadow-sm p-3">
+            <!--Il div di seguito contiene l'immagine che rappresenta la raccolta-->
+            <div class="col-md-2 d-flex justify-content-center align-items-center">
+                <img src="{{ url_for('static', filename=raccolta.immagine_raccolta) }}" alt="" class="img-fluid rounded" style="max-width: 150px; max-height: 170px;">
+            </div>
+
+            <div class="col-md-10">
+                <div class="row align-items-center mb-2">
+                    <div class="col-auto pe-0"> <!-- Adjusted for closer positioning and removed padding-end -->
+                        <!-- Made image slightly smaller and square -->
+                        <img src="{{ url_for('static', filename=raccolta.immagine_raccolta) }}" alt="" class="img-fluid rounded" style="width: 40px; height: 40px; object-fit: cover;">
+                    </div>
+                    <h3 class="col mb-0">
+                        <a href="{{ url_for('post', raccolta_id=raccolta.id) }}" class="text-decoration-none">{{ usr.nickname | e }}</a>
+                    </h3>
+                    <time class="col-auto text-muted">{{ raccolta.date | e }}</time> <!-- Changed to col-auto for dynamic sizing -->
+                </div>
+                <article>
+                    {{ raccolta.text | e }}
+                </article>
+            </div>
+        </div>
+    {% endfor %}
+</main>
+
+
+{% endblock %}

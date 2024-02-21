@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <main class="container ms-3 me-3">
+        <div class="row">
+            <div class="container">
+                <section class="row">
+                        <h3 class="col-6">{{ usr.nickname }}</h3>
+                        <time class="col-8">{{ raccolta.date }}</time>
+                </section>
+            </div>
+        </div>
+
+        <div class="container mt-4">
+        <div class="row justify-content-center align-items-center g-3"> <!-- g-3 adds a gap between columns -->
+
+                <div class="col-lg-6 col-md-6 order-lg-2">
+                    <!-- Added a border-start class for the image container -->
+                    <div class="border-start ps-3"> <!-- ps-3 adds padding to the left (start) of the container -->
+                        <img src="{{ url_for('static', filename = raccolta.immagine_raccolta) }}" class="img-fluid rounded" alt="Post Image">
+                    </div>
+                </div>
+
+                <div class="col-lg-6 col-md-6 order-lg-1">
+                    <article class="card">
+                        <div class="card-body">
+                            {{ raccolta.text }}
+                        </div>
+                    </article>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Strumenti per il Debugging con Jinja Templates-->
+        Lo user è il n°: {{ usr.id }} --- 
+        L'id della raccolta è il numero: {{ raccolta.id }}
+        {% for donazione in donazioni %}
+            ecco l'id della donazione i-esima: {{donazione.id}}
+        {% endfor %}
+
+        <form action="/donazioni/new" method="POST" enctype="multipart/form-data">
+
+        <!-- This following code, being pourposfully at the end of the page, is the
+            form where I can submit a comment to the route "/comments/new" -->
+            
+            <!-- Di seguito l'ammontare della donazione-->
+            <div class="mb-3">
+                <label for="maxDonation" class="form-label">Maximum Single Donation Amount</label>
+                <input type="number" class="form-control" id="maxDonation" name="maxDonation" min="{{ donazione.min }}" max="{{ donazione.max }}" required placeholder="Maximum amount in euros">
+            </div>
+
+            <!-- The following is the text area -->
+            <div class="mb-3">
+              <label for="txtComment" class="form-label">Messaggio che accompagna la donazione</label>
+              <textarea class="form-control" id="txtComment" name="testo" rows="3" required></textarea>
+            </div>
+
+            <!-- The following is where I can state if I want to be Anon -->
+            <div class="mb-3 form-check">
+              <input type="checkbox" class="form-check-input" id="checkAnonymous" name="isAnonymous">
+              <label class="form-check-label" for="checkAnonymous">Donare Anonimamente</label>
+            </div>
+
+            <input type="number" name="id_post" value="{{ post.id }}" hidden>
+            <button type="submit" class="btn btn-primary">Pubblica</button>
+
+        </form>
+
+    </main>
+{% endblock %}

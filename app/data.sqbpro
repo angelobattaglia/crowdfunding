@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="C:/Users/angel/Desktop/raccolta_fondi/app/data.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="0"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="200"/><column_width id="3" width="8892"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><current_table name="4,6:mainutenti"/><default_encoding codec=""/><browse_table_settings/></tab_browse><tab_sql><sql name="SQL 1">CREATE TABLE &quot;donazioni&quot; (
+	&quot;id&quot;	INTEGER NOT NULL,
+	&quot;data_pubblicazione&quot;	INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	&quot;nome&quot;	TEXT NOT NULL, -- Questo campo è richiesto esplicitamente
+	&quot;cognome&quot;	TEXT NOT NULL, -- Questo campo è richiesto esplicitamente
+	&quot;indirizzo&quot;	TEXT NOT NULL, -- Questo campo è richiesto esplicitamente
+	&quot;numero_carta&quot;	TEXT NOT NULL, -- Questo campo è richiesto esplicitamente
+	&quot;id_raccolta&quot;	INTEGER NOT NULL,
+	&quot;id_utente&quot;	INTEGER, -- This can be null if it is Anonymous
+	&quot;soldi_donati&quot;	INTEGER CHECK (&quot;soldi_donati&quot; &gt;= 1 AND &quot;soldi_donati&quot; &lt;= 5000) NOT NULL,
+	PRIMARY KEY(&quot;id&quot;),
+	FOREIGN KEY(&quot;id_utente&quot;) REFERENCES &quot;utenti&quot;(&quot;id&quot;),
+	FOREIGN KEY(&quot;id_raccolta&quot;) REFERENCES &quot;raccolte&quot;(&quot;id&quot;)
+);</sql><current_tab id="0"/></tab_sql></sqlb_project>
