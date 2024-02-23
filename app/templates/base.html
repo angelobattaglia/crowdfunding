@@ -82,14 +82,25 @@
                     <!-- The body of the form  -->
                     <div class="modal-body">
                         <div class="mb-3">
-                            <!-- Motivation area -->
+
+                            <!-- Adding a name to the collection -->
+                            <!--name:nome_raccolta-->
                             <div class="mb-3">
-                                <label for="postContent" class="form-label">Post for a new Crowdfunding Venture!</label>
+                                <label for="postContent" class="form-label">Dai un nome alla Raccolta Fondi</label>
+                                <!-- the name="text" is the one that bonds it --> 
+                                <textarea class="form-control" id="postContent" name="nome_raccolta" required minlength="1" maxlength="20" placeholder="Insert the name of the collection here!"></textarea>
+                            </div>
+
+                            <!-- Motivation area -->
+                            <!--name:text-->
+                            <div class="mb-3">
+                                <label for="postContent" class="form-label">Post a motivation for a new Crowdfunding Venture!</label>
                                 <!-- the name="text" is the one that bonds it --> 
                                 <textarea class="form-control" id="postContent" name="text" required minlength="30" maxlength="200" placeholder="Insert here what your goals are!"></textarea>
                             </div>
 
                             <!-- Adding an image area -->
+                            <!--name:immagine_raccolta-->
                             <div class="mb-3">
                                 <label for="postImage" class="form-label">Add an image (optional)</label>
                                 <div class="input-group">
@@ -97,25 +108,29 @@
                                 </div>
                             </div>
                             
-                            <div class="mb-3">
-                                <label for="minDonation" class="form-label">Minimum Single Donation Amount</label>
-                                <input type="number" class="form-control" id="minDonation" name="minDonation" min="0" required placeholder="Minimum amount in euros">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="maxDonation" class="form-label">Maximum Single Donation Amount</label>
-                                <input type="number" class="form-control" id="maxDonation" name="maxDonation" min="0" required placeholder="Maximum amount in euros">
-                            </div>
-
                             <!-- New field for Donation Target -->
+                            <!--name:donationTarget-->
                             <div class="mb-3">
                                 <label for="donationTarget" class="form-label">Donation Target</label>
                                 <input type="number" class="form-control" id="donationTarget" name="donationTarget" min="0" required placeholder="Target amount in euros">
                             </div>
 
+                            <!--name:minDonation-->
+                            <div class="mb-3">
+                                <label for="minDonation" class="form-label">Minimum Single Donation Amount</label>
+                                <input type="number" class="form-control" id="minDonation" name="minDonation" min="0" required placeholder="Minimum amount in euros">
+                            </div>
+
+                            <!--name:maxDonation-->
+                            <div class="mb-3">
+                                <label for="maxDonation" class="form-label">Maximum Single Donation Amount</label>
+                                <input type="number" class="form-control" id="maxDonation" name="maxDonation" min="0" required placeholder="Maximum amount in euros">
+                            </div>
+
                             <!-- Using Radio check controls -->
                             <div class="mb-3">
 
+                                <!--name:collectionType value=flash-->
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="collectionType" id="flashCollection" value="flash">
                                     <label class="form-check-label" for="flashCollection">
@@ -123,6 +138,7 @@
                                     </label>
                                 </div>
 
+                                <!--name:collectionType value=fourteenDay-->
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="collectionType" id="fourteenDayCollection" value="fourteenDay">
                                     <label class="form-check-label" for="fourteenDayCollection">

@@ -69,7 +69,8 @@ def get_users():
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
-    sql = 'SELECT id, nickname, immagine_profilo FROM utenti'
+    # SQL query to select all records from the "utenti" table excluding the password and the email
+    sql = 'SELECT id, nickname FROM utenti'
     cursor.execute(sql)
     users = cursor.fetchall()
 

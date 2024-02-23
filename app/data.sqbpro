@@ -1,14 +1,24 @@
-<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="C:/Users/angel/Desktop/raccolta_fondi/app/data.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="0"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="200"/><column_width id="3" width="8892"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><current_table name="4,6:mainutenti"/><default_encoding codec=""/><browse_table_settings/></tab_browse><tab_sql><sql name="SQL 1">CREATE TABLE &quot;donazioni&quot; (
-	&quot;id&quot;	INTEGER NOT NULL,
-	&quot;data_pubblicazione&quot;	INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	&quot;nome&quot;	TEXT NOT NULL, -- Questo campo è richiesto esplicitamente
-	&quot;cognome&quot;	TEXT NOT NULL, -- Questo campo è richiesto esplicitamente
-	&quot;indirizzo&quot;	TEXT NOT NULL, -- Questo campo è richiesto esplicitamente
-	&quot;numero_carta&quot;	TEXT NOT NULL, -- Questo campo è richiesto esplicitamente
-	&quot;id_raccolta&quot;	INTEGER NOT NULL,
-	&quot;id_utente&quot;	INTEGER, -- This can be null if it is Anonymous
-	&quot;soldi_donati&quot;	INTEGER CHECK (&quot;soldi_donati&quot; &gt;= 1 AND &quot;soldi_donati&quot; &lt;= 5000) NOT NULL,
-	PRIMARY KEY(&quot;id&quot;),
-	FOREIGN KEY(&quot;id_utente&quot;) REFERENCES &quot;utenti&quot;(&quot;id&quot;),
-	FOREIGN KEY(&quot;id_raccolta&quot;) REFERENCES &quot;raccolte&quot;(&quot;id&quot;)
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="C:/Users/angel/Desktop/raccolta_fondi/app/data.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="3"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="200"/><column_width id="3" width="11029"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><current_table name="4,9:maindonazioni"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="donazioni" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="82"/><column index="2" value="279"/><column index="3" value="92"/><column index="4" value="140"/><column index="5" value="131"/><column index="6" value="207"/><column index="7" value="166"/><column index="8" value="146"/><column index="9" value="183"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="SQL 1">CREATE TABLE &quot;raccolte&quot; (
+
+    &quot;id&quot;    INTEGER PRIMARY KEY,
+
+    -- Qui i campi che descrivono la raccolta
+    &quot;nome_donazione&quot;    TEXT NOT NULL,
+    &quot;descrizione&quot;    TEXT NOT NULL,
+    &quot;immagine_donazione&quot;    TEXT DEFAULT 'img/default_image.png',
+
+    -- Di seguito i campi che descrivono il lato monetario della raccolta
+    &quot;obiettivo_monetario&quot; INTEGER NOT NULL,
+    -- &quot;capitale_donato&quot; INTEGER, -- Could be NULL is nobody donates money -- I'll add this to the &quot;donazioni&quot; table
+
+    -- Di che tipo di raccolta si tratta
+    &quot;CollectionType&quot; TEXT CHECK(CollectionType IN ('flash', 'normal')) NOT NULL,
+
+    -- E infine i campi che descrivono il carattere temporale della raccolta
+    &quot;StartTime&quot;  INTEGER NOT NULL, -- Data in cui è stata postata la raccolta
+    &quot;EndTime&quot;    INTEGER NOT NULL, -- I could count all in seconds from 14 days (1,210,000 seconds) to 5 minutes
+
+    -- La foreign key
+    &quot;id_utente&quot;    INTEGER NOT NULL,
+    FOREIGN KEY(&quot;id_utente&quot;) REFERENCES &quot;utenti&quot;(&quot;id&quot;)
 );</sql><current_tab id="0"/></tab_sql></sqlb_project>

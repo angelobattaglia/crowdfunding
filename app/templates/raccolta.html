@@ -8,7 +8,17 @@
             <div class="container">
                 <section class="row">
                         <h3 class="col-6">{{ usr.nickname }}</h3>
-                        <time class="col-8">{{ raccolta.date }}</time>
+                        <!--The following is the name of the Collection-->
+                        <h3 class="col-6">{{ raccolta.nome_donazione }}</h3>
+                        <p>The time that this collection started is</p>
+                        <time class="col-8">{{ raccolta.StartTime }}</time>
+                        {#
+                        {% if raccolta.end_time_dt_obj < current_time %}
+                            <span class="badge bg-danger">Time over!</span>
+                        {% else %}
+                            <span class="badge bg-secondary">The ending time is: {{ raccolta.EndTime | e }}</span>
+                        {% endif %}
+                        #}
                 </section>
             </div>
         </div>
@@ -19,14 +29,22 @@
                 <div class="col-lg-6 col-md-6 order-lg-2">
                     <!-- Added a border-start class for the image container -->
                     <div class="border-start ps-3"> <!-- ps-3 adds padding to the left (start) of the container -->
-                        <img src="{{ url_for('static', filename = raccolta.immagine_raccolta) }}" class="img-fluid rounded" alt="Post Image">
+                        <img src="{{ url_for('static', filename = raccolta.immagine_donazione) }}" class="img-fluid rounded" alt="Post Image">
                     </div>
                 </div>
 
+                        <!-- Check if the current logged-in user is the creator of the post -->
+                {% if current_user.is_authenticated and current_user.id == usr.id %}
+                    <form action="{{ url_for('delete_raccolta_route', id=raccolta.id) }}" method="POST">
+                        <button type="submit" class="btn btn-danger">Elimina Post</button>
+                    </form>
+                {% endif %}
+
                 <div class="col-lg-6 col-md-6 order-lg-1">
+                    <p>Description of the collection:</p>
                     <article class="card">
                         <div class="card-body">
-                            {{ raccolta.text }}
+                            {{ raccolta.descrizione }}
                         </div>
                     </article>
                 </div>
@@ -37,9 +55,12 @@
         <!-- Strumenti per il Debugging con Jinja Templates-->
         Lo user è il n°: {{ usr.id }} --- 
         L'id della raccolta è il numero: {{ raccolta.id }}
+        {#
         {% for donazione in donazioni %}
             ecco l'id della donazione i-esima: {{donazione.id}}
         {% endfor %}
+        #}
+        {#
 
         <form action="/donazioni/new" method="POST" enctype="multipart/form-data">
 
@@ -68,6 +89,7 @@
             <button type="submit" class="btn btn-primary">Pubblica</button>
 
         </form>
+        #}
 
     </main>
 {% endblock %}

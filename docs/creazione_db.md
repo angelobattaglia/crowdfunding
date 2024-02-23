@@ -40,11 +40,14 @@ CREATE TABLE "raccolte" (
 
     -- Di seguito i campi che descrivono il lato monetario della raccolta
     "obiettivo_monetario" INTEGER NOT NULL,
-    "capitale_donato" INTEGER, -- Could be NULL is nobody donates money
+    -- "capitale_donato" INTEGER, -- Could be NULL is nobody donates money -- I'll add this to the "donazioni" table
+
+    -- Di che tipo di raccolta si tratta
+    "CollectionType" TEXT CHECK(CollectionType IN ('flash', 'normal')) NOT NULL,
 
     -- E infine i campi che descrivono il carattere temporale della raccolta
-    "data"  INTEGER NOT NULL, -- Data in cui è stata postata la raccolta
-    "scadenza"    INTEGER NOT NULL, -- I could count all in seconds from 14 days (1,210,000 seconds) to 5 minutes
+    "StartTime"  INTEGER NOT NULL, -- Data in cui è stata postata la raccolta
+    "EndTime"    INTEGER NOT NULL, -- I could count all in seconds from 14 days (1,210,000 seconds) to 5 minutes
 
     -- La foreign key
     "id_utente"    INTEGER NOT NULL,
@@ -56,16 +59,62 @@ Donazioni table
 ```sql
 CREATE TABLE "donazioni" (
 	"id"	INTEGER NOT NULL,
-	"data_pubblicazione"	INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	"data"	INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	"nome"	TEXT NOT NULL, -- Questo campo è richiesto esplicitamente
 	"cognome"	TEXT NOT NULL, -- Questo campo è richiesto esplicitamente
 	"indirizzo"	TEXT NOT NULL, -- Questo campo è richiesto esplicitamente
 	"numero_carta"	TEXT NOT NULL, -- Questo campo è richiesto esplicitamente
 	"id_raccolta"	INTEGER NOT NULL,
-	"id_utente"	INTEGER, -- This can be null if it is Anonymous
-	"soldi_donati"	INTEGER CHECK ("soldi_donati" >= 1 AND "soldi_donati" <= 5000) NOT NULL,
+	-- "id_utente"	INTEGER, -- This can be null if it is Anonymous
+	-- "soldi_donati"	INTEGER CHECK ("soldi_donati" >= 1 AND "soldi_donati" <= 5000) NOT NULL,
+	"soldi_donati"	INTEGER CHECK ("soldi_donati" >= 1), -- It can be NULL, when the collection starts, or if it just doesn't receive any
 	PRIMARY KEY("id"),
-	FOREIGN KEY("id_utente") REFERENCES "utenti"("id"),
+	-- FOREIGN KEY("id_utente") REFERENCES "utenti"("id"),
 	FOREIGN KEY("id_raccolta") REFERENCES "raccolte"("id")
+);
+```
+
+
+## Alternatives
+
+Other Alternatives for the same table:
+
+- Using DATETIME for the start and ending Date
+```sql
+CREATE TABLE Fundraisers (
+    ID INTEGER PRIMARY KEY AUTOINCREMENT,
+    Title TEXT NOT NULL,
+    Description TEXT,
+    ImageURL TEXT, -- Assuming the image is stored elsewhere and accessed via a URL
+    MonetaryGoal REAL NOT NULL,
+    CollectionType TEXT CHECK(CollectionType IN ('flash', 'normal')) NOT NULL,
+    StartTime DATETIME NOT NULL,
+    EndTime DATETIME, -- EndTime can be calculated based on CollectionType, but storing it explicitly for 'normal' type
+    MinDonation REAL NOT NULL CHECK(MinDonation >= 5), -- Assuming the minimum is 5 euros
+    MaxDonation REAL NOT NULL CHECK(MaxDonation <= 5000) -- Assuming the maximum is 5000 euros
+
+        -- La foreign key
+    "id_utente"    INTEGER NOT NULL,
+    FOREIGN KEY("id_utente") REFERENCES "utenti"("id")
+);
+```
+
+- Using text fields for storing date and time values like StartTime and EndTime
+```sql
+CREATE TABLE Fundraisers (
+    ID INTEGER PRIMARY KEY AUTOINCREMENT,
+    Title TEXT NOT NULL,
+    Description TEXT,
+    ImageURL TEXT,
+    MonetaryGoal REAL NOT NULL,
+    CollectionType TEXT CHECK(CollectionType IN ('flash', 'normal')) NOT NULL,
+    StartTime TEXT NOT NULL, -- Stored in ISO 8601 format 'YYYY-MM-DD HH:MM:SS'
+    EndTime TEXT, -- Optional, depending on the CollectionType
+    MinDonation REAL NOT NULL CHECK(MinDonation >= 5),
+    MaxDonation REAL NOT NULL CHECK(MaxDonation <= 5000)
+
+        -- La foreign key
+    "id_utente"    INTEGER NOT NULL,
+    FOREIGN KEY("id_utente") REFERENCES "utenti"("id")
 );
 ```

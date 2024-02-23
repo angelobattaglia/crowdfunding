@@ -42,9 +42,31 @@ login_manager.init_app(app)
 
 @app.route('/')
 def home():
+    # I collect all the users and the raccolte
     raccolte = []
+    users = []
     raccolte = raccolte_dao.get_raccolte()
-    return render_template('home.html', raccolte=raccolte, title='Home')
+    users = utenti_dao.get_users()
+
+    # I create a new dictionary of raccolte with the nickname of the user as the last field
+    raccolte_new = []
+    for raccolta in raccolte:
+        for user in users:
+            if raccolta['id_utente'] == user['id']:
+                # first I have to convert the string to a datetime object, so that I can compare it using Jinja
+                end_time_dt_obj = datetime.datetime.strptime(raccolta["EndTime"], "%Y-%m-%d %H:%M:%S.%f")
+                # Then I define these new fields
+                raccolta['end_time_dt_obj'] = end_time_dt_obj
+                raccolta['nickname'] = user['nickname']
+                raccolte_new.append(raccolta)
+    
+    
+    # I get the current time and pass it along
+    current_time=datetime.datetime.now()
+        
+    # Passing the current time, so that if the time's up, it displays it
+    # I pass the raccolte_new to the home.html template
+    return render_template('home.html', raccolte_new = raccolte_new, current_time=current_time, title='Home')
 
 
 #########################################################
@@ -56,26 +78,6 @@ def home():
 #########################################################
 #########################################################
 
-# Dynamic routing
-@app.route('/raccolta/<int:raccolta_id>')
-def raccolta(raccolta_id):
-    raccolte = []
-    raccolte = raccolte_dao.get_all_raccolte()
-    
-    # Check if the provided raccolta_id is within the valid range
-    if raccolta_id < 1 or raccolta_id > len(raccolte):
-        abort(404)  # Post not found, return a 404 error
-
-    raccolta = raccolte[raccolta_id-1]
-
-    # I also have to pass him the user to whom the post belongs, 
-    # each post has a user_id field, so I use post_dao's get_user_by_id method ..
-    usr = utenti_dao.get_user_by_id(raccolta['id_utente'])
-
-    # Donations for the post with post_id equal to the one passed in the URL
-    # donations = donazioni_dao.get_donazioni(raccolta_id)
-
-    return render_template('post.html', raccolta = raccolta, usr = usr, title='Raccolta')
 
 @app.route('/new_raccolta', methods=['GET', 'POST'])
 @login_required
@@ -92,9 +94,9 @@ def new_raccolta():
     ## raccolta['collection_type'] # This is the type of the collection
     ## raccolta['end_time'] # This is the end time of the collection
     ## raccolta['date'] # this is the date of the collection
-    if datetime.datetime.strptime(raccolta['date'], '%Y-%m-%d').date() < datetime.date.today():
-        app.logger.error('Data errata')
-        return redirect(url_for('home'))
+    # if datetime.datetime.strptime(raccolta['StartTime'], '%Y-%m-%d').date() < datetime.date.today():
+        # app.logger.error('Data errata')
+        # return redirect(url_for('home'))
 
     
     #-----------------------------------------------------------------------
@@ -103,15 +105,21 @@ def new_raccolta():
     ## raccolta['maxDonation'] # This is the maximum amount of the collections
     ## raccolta['donationTarget'] # This is the target amount of the collection
 
-    if raccolta['collection_type'] == 'flash':
+    if raccolta['collectionType'] == 'flash':
         # Set the duration to 5 minutes from now
-        end_time = datetime.now() + datetime.timedelta(minutes=5)
+        start_time = datetime.datetime.now()
+        end_time = datetime.datetime.now() + datetime.timedelta(minutes=5)
+        raccolta['StartTime'] = start_time
+        raccolta['EndTime'] = end_time
         # Process the flash collection here
-    elif raccolta['collection_type'] == 'fourteenDay':
+    elif raccolta['collectionType'] == 'fourteenDay':
         # Set the duration to 14 days from now
-        end_time = datetime.now() + datetime.timedelta(days=14)
+        start_time = datetime.datetime.now()
+        end_time = datetime.datetime.now() + datetime.timedelta(days=14)
+        raccolta['StartTime'] = start_time
+        raccolta['EndTime'] = end_time
         # Process the 14-day collection here
-    elif raccolta['collection_type'] == '':
+    elif raccolta['collectionType'] == '':
         app.logger.error('Devi selezionare una collection_type!')
         return redirect(url_for('home'))
 
@@ -163,7 +171,8 @@ def new_raccolta():
     ## raccolta['id_utente'] # This is the id of the user
     ## raccolta['nickname'] # This is the nickname of the user
     raccolta['id_utente'] = int(flask_login.current_user.id)  # flask_login.current_user.id is the id of the current user
-    raccolta['nickname'] = str(flask_login.current_user.nickname)
+    # I'm not sure if the following line is needed
+    # raccolta['nickname'] = str(flask_login.current_user.nickname)
 
     #-----------------------------------------------------------------------
     # After finishing making the checks, I put the "post" dictionary in the database
@@ -174,6 +183,68 @@ def new_raccolta():
     else:
         app.logger.error('Errore nella creazione del post: riprova!')
 
+    return redirect(url_for('home'))
+
+# Dynamic routing
+@app.route('/raccolta/<int:raccolta_id>')
+def raccolta(raccolta_id):
+    raccolte = []
+    raccolte = raccolte_dao.get_all_raccolte()
+    
+    # Check if the provided raccolta_id is within the valid range
+    if raccolta_id < 0 or raccolta_id > len(raccolte):
+        abort(403)  # Post not found, return a 404 error
+
+    raccolta = raccolte[raccolta_id-1]
+    # raccolta = raccolte[raccolta_id-2]
+
+    # I also have to pass him the user to whom the post belongs, 
+    # each post has a user_id field, so I use post_dao's get_user_by_id method ..
+    usr = utenti_dao.get_user_by_id(raccolta['id_utente'])
+    # # I should implement the following
+    # current_time = datetime.datetime.now()
+
+    # Donations for the post with post_id equal to the one passed in the URL
+    # donations = donazioni_dao.get_donazioni(raccolta_id)
+
+    return render_template('raccolta.html', raccolta = raccolta, usr = usr, title='Raccolta')
+
+# Deleting a raccolta
+@app.route('/delete_raccolta/<int:id>', methods=['POST'])
+@login_required
+def delete_raccolta_route(id):
+    # Authenticate: Check if the current_user's ID matches the ID of the user who created the raccolta
+    # This part depends on how you associate raccolte with users in your database
+    # For demonstration, let's assume you have a function get_raccolta_creator_id that returns the creator's ID given a raccolta ID
+    raccolta = raccolte_dao.get_raccolta(id)
+    creator_id = utenti_dao.get_user_by_id(raccolta['id'])
+    raccolta = raccolte_dao.get_raccolta(id)
+    
+
+    # Ensure that your deletion route (/delete_raccolta/<int:id>) is secure, especially since it's using a POST method. 
+    # The check to ensure that the current user is the creator of the raccolta before allowing deletion is good practice.
+    # Authentication Check: Your route should verify that the user is authenticated before proceeding with any deletion logic. 
+    # Flask-Login's current_user.is_authenticated is useful for this purpose, and you're already using @login_required to protect the route.
+    # Authorization Check: It's essential to ensure that the authenticated user has the right to delete the specific raccolta. 
+    # This involves checking that the current user is the creator of the raccolta or has sufficient permissions. 
+    # Your approach of comparing the current user's ID with the creator's ID is a good practice for this authorization check.
+    if flask_login.current_user.id != raccolta['id_utente']:
+        flash('You are not authorized to delete this post.')
+        return redirect(url_for('home'))
+
+    if flask_login.current_user.id != creator_id:
+        flash('You are not authorized to delete this post.')
+        return redirect(url_for('home'))
+
+    # Perform the deletion
+    success = raccolte_dao.delete_raccolta(id)  # Assuming this is the function from your DAO file
+
+    if success:
+        flash('Post deleted successfully.')
+    else:
+        flash('An error occurred while trying to delete the post.')
+
+    # Redirect after deletion
     return redirect(url_for('home'))
 
 

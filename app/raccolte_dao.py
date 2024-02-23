@@ -14,17 +14,14 @@ def add_raccolta(raccolta):
     cur = con.cursor()
 
     # If an image is submitted, then the first SQL statement is executed, otherwise the second one is executed.
-    if 'immagine_post' in raccolta:
-        # the sql variable has its fields that have to corrispond to the fields of the database
-        # the raccolta['date'], raccolta['text'], raccolta['immagine_post'], raccolta['id_utente'] are the fields of the dictionary post
-        # hence these might not have the same name
-        sql = 'INSERT INTO raccolte(nome_donazione, descrizione, immagine_donazione, obiettivo_monetario, capitale_donato, scadenza, id_utente) VALUES(?,?,?,?,?,?,?)'
-        cur.execute(sql, (raccolta['nome_donazione'], raccolta['descrizione'], raccolta['immagine_donazione'], raccolta['obiettivo_monetario'], 
-                          raccolta['capitale_donato'], raccolta['scadenza'], raccolta['id_utente']))
+    if 'immagine_raccolta' in raccolta:
+        sql = 'INSERT INTO raccolte(nome_donazione, descrizione, immagine_donazione, obiettivo_monetario, CollectionType, StartTime, EndTime, id_utente) VALUES(?,?,?,?,?,?,?,?)'
+        cur.execute(sql, (raccolta['nome_raccolta'], raccolta['text'], raccolta['immagine_raccolta'], raccolta['donationTarget'], 
+                          raccolta['collectionType'], raccolta['StartTime'], raccolta['EndTime'], raccolta['id_utente']))
     else:
-        sql = 'INSERT INTO raccolte(nome_donazione, descrizione, obiettivo_monetario, capitale_donato, scadenza, id_utente) VALUES(?,?,?,?,?,?)'
-        cur.execute(sql, (raccolta['nome_donazione'], raccolta['descrizione'], raccolta['obiettivo_monetario'], 
-                          raccolta['capitale_donato'], raccolta['scadenza'], raccolta['id_utente']))
+        sql = 'INSERT INTO raccolte(nome_donazione, descrizione, obiettivo_monetario, CollectionType, StartTime, EndTime, id_utente) VALUES(?,?,?,?,?,?,?)'
+        cur.execute(sql, (raccolta['nome_raccolta'], raccolta['text'], raccolta['donationTarget'], 
+                          raccolta['collectionType'], raccolta['StartTime'], raccolta['EndTime'], raccolta['id_utente']))
 
     # This method is focused on verifying that the changes are committed to the database,
     # hence, it's a good practice to structure an if-then-else statement to handle the commit.
@@ -106,8 +103,6 @@ def get_all_raccolte():
 # -----------------Delete Method------------------
 # ------------------------------------------------
 
-import sqlite3
-
 def delete_raccolta(id):
     # Connettersi al database SQLite
     con = sqlite3.connect('data.db')
@@ -120,6 +115,13 @@ def delete_raccolta(id):
     # La variabile 'success' viene utilizzata per tracciare se l'operazione è stata eseguita con successo
     success = False
 
+    '''
+    In SQLite, quando si tenta di eliminare una riga che non esiste (perché è già stata eliminata
+    o perché non è mai stata presente), l'operazione DELETE non genererà un errore. 
+    L'operazione verrà invece completata correttamente, ma non influirà su alcuna riga. 
+    Questo comportamento fa parte del funzionamento standard di SQL e non è esclusivo di SQLite. 
+    Ecco cosa succede in ogni scenario che hai descritto:
+    '''
     try:
         # Eseguire la dichiarazione DELETE, passando l'id per sostituire il segnaposto
         cur.execute(sql, (id,))

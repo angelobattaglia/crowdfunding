@@ -29,7 +29,7 @@ def add_donazione(donazione):
     sql = 'INSERT INTO commenti(data_pubblicazione, testo, id_post, id_utente, Valutazione, immagine_commento) VALUES(?,?,?,?,?,?)'
 
     try:
-        if comment['id_utente'] is None:
+        if donazione['id_utente'] is None:
             cursor.execute(sql, (x.strftime("%Y-%m-%d"), comment['testo'], comment['id_post'], None , comment['Valutazione'], comment['immagine_commento']))
         else:
             cursor.execute(sql, (x.strftime("%Y-%m-%d"), comment['testo'], comment['id_post'], comment['id_utente'], comment['Valutazione'], comment['immagine_commento']))

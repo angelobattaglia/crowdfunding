@@ -4,31 +4,60 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-    <main class="col-md-10">
-    {% for raccolta in raccolte %}
-        <div class="container my-3">
-            <div class="row border rounded shadow-sm p-3">
-                <!-- The following div contains the image that represents the collection -->
-                <div class="col-md-2 d-flex justify-content-center align-items-center">
-                    <img src="{{ url_for('static', filename=raccolta.immagine_donazione) }}" alt="" class="img-fluid rounded" style="max-width: 150px; max-height: 170px;">
-                </div>
 
-                <div class="col-md-10">
-                    <div class="row align-items-center mb-2">
-                        <h3 class="col mb-0">
-                            <!-- Assuming you need to display the user's nickname who created the raccolta -->
-                            <a href="{{ url_for('user_profile', user_id=raccolta.id_utente) }}" class="text-decoration-none">{{ raccolta.nickname | e }}</a> <!-- Adjust the 'url_for' function as per your route -->
-                        </h3>
-                        <!-- You might need to format 'scadenza' or another date field properly -->
-                        <time class="col-auto text-muted">{{ raccolta.scadenza | e }}</time> <!-- Changed to col-auto for dynamic sizing -->
+<div class="container">
+    <div class="row justify-content-center">
+        <main class="col-md-10">
+            {% for raccolta in raccolte_new %}
+                <div class="my-3">
+                    <div class="border rounded shadow-sm p-3">
+                        <div class="row">
+                            <div class="col-md-2 d-flex justify-content-center align-items-center">
+                                <!-- This time, here I put raccolta.immagine_donazione because I am passing raccolta after retrieving it from the DB! -->
+                                <img src="{{ url_for('static', filename=raccolta.immagine_donazione) }}" alt="Collection Image" class="img-fluid rounded" style="max-width: 150px; max-height: 170px; object-fit: cover;">
+                            </div>
+
+                            <div class="col-md-10">
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <h3 class="card-title">
+                                            <!-- Redirect to the home page where all raccoltas are listed -->
+                                            <a href="{{ url_for('raccolta', raccolta_id=raccolta.id) }}" class="text-decoration-none">{{ raccolta.nickname | e }}</a>
+                                        </h3>
+                                        <h3 class="card-title">
+                                            <!-- Redirect to the home page -->
+                                            <a href="{{ url_for('home') }}" class="text-decoration-none">{{ raccolta.nome_raccolta | e }}</a>
+                                        </h3>
+
+                                        {% if raccolta.end_time_dt_obj < current_time %}
+                                            <span class="badge bg-danger">Time over!</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">The ending time is: {{ raccolta.EndTime | e }}</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="card-footer text-muted">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            {% if raccolta.end_time_dt_obj < current_time %}
+                                                <p class="mb-0">The raccolta ended at:</p>
+                                            {% else %}
+                                                <p class="mb-0">The raccolta ends:</p>
+                                            {% endif %}
+                                            <span class="badge bg-secondary">{{ raccolta.EndTime | e }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <article class="mt-4">
+                                    <p>{{ raccolta.text | e }}</p>
+                                </article>
+                            </div>
+
+                        </div>
                     </div>
-                    <article>
-                        {{ raccolta.descrizione | e }}
-                    </article>
                 </div>
-            </div>
-        </div>
-    {% endfor %}
-    </main>
+            {% endfor %}
+        </main>
+    </div>
+</div>
 
 {% endblock %}
