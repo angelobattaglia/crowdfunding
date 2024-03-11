@@ -2,7 +2,7 @@
 
 ## How to fire this up
 
-In Windows, it's recommended to use Powershell. In the root directory of this project:
+On Windows, it's recommended to use Powershell. In the root directory of this project:
 
 ```ps1
 python -m venv .env
