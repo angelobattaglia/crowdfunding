@@ -58,7 +58,8 @@ def home():
                 # Then I define these new fields
                 raccolta['end_time_dt_obj'] = end_time_dt_obj
                 raccolta['nickname'] = user['nickname']
-                raccolte_new.append(raccolta)
+                if  end_time_dt_obj > datetime.datetime.now():
+                    raccolte_new.append(raccolta)
     
     
     # I get the current time and pass it along
@@ -68,6 +69,34 @@ def home():
     # I pass the raccolte_new to the home.html template
     return render_template('home.html', raccolte_new = raccolte_new, current_time=current_time, title='Home')
 
+
+@app.route('/raccolte-chiuse')
+def raccolte_chiuse():
+    # I collect all the users and the raccolte
+    raccolte = []
+    users = []
+    raccolte = raccolte_dao.get_raccolte()
+    users = utenti_dao.get_users()
+
+    # I create a new dictionary of raccolte with the nickname of the user as the last field
+    raccolte_new = []
+    for raccolta in raccolte:
+        for user in users:
+            if raccolta['id_utente'] == user['id']:
+                # first I have to convert the string to a datetime object, so that I can compare it using Jinja
+                end_time_dt_obj = datetime.datetime.strptime(raccolta["EndTime"], "%Y-%m-%d %H:%M:%S.%f")
+                # Then I define these new fields
+                raccolta['end_time_dt_obj'] = end_time_dt_obj
+                raccolta['nickname'] = user['nickname']
+                if  end_time_dt_obj <= datetime.datetime.now():
+                    raccolte_new.append(raccolta)    
+    
+    # I get the current time and pass it along
+    current_time=datetime.datetime.now()
+        
+    # Passing the current time, so that if the time's up, it displays it
+    # I pass the raccolte_new to the home.html template
+    return render_template('home.html', raccolte_new = raccolte_new, current_time=current_time, title='Home')
 
 #########################################################
 #########################################################
