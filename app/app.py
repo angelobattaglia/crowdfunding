@@ -58,6 +58,7 @@ def home():
                 # Then I define these new fields
                 raccolta['end_time_dt_obj'] = end_time_dt_obj
                 raccolta['nickname'] = user['nickname']
+                # Filter only active raccolte
                 if  end_time_dt_obj > datetime.datetime.now():
                     raccolte_new.append(raccolta)
     
@@ -88,6 +89,7 @@ def raccolte_chiuse():
                 # Then I define these new fields
                 raccolta['end_time_dt_obj'] = end_time_dt_obj
                 raccolta['nickname'] = user['nickname']
+                # Filter only inactive raccolte
                 if  end_time_dt_obj <= datetime.datetime.now():
                     raccolte_new.append(raccolta)    
     
