@@ -248,8 +248,7 @@ def delete_raccolta_route(id):
     # This part depends on how you associate raccolte with users in your database
     # For demonstration, let's assume you have a function get_raccolta_creator_id that returns the creator's ID given a raccolta ID
     raccolta = raccolte_dao.get_raccolta(id)
-    creator_id = utenti_dao.get_user_by_id(raccolta['id'])
-    raccolta = raccolte_dao.get_raccolta(id)
+    creator = utenti_dao.get_user_by_id(raccolta['id_utente'])
     
 
     # Ensure that your deletion route (/delete_raccolta/<int:id>) is secure, especially since it's using a POST method. 
@@ -263,7 +262,7 @@ def delete_raccolta_route(id):
         flash('You are not authorized to delete this post.')
         return redirect(url_for('home'))
 
-    if flask_login.current_user.id != creator_id:
+    if flask_login.current_user.id != creator['id']:
         flash('You are not authorized to delete this post.')
         return redirect(url_for('home'))
 
