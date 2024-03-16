@@ -219,15 +219,7 @@ def new_raccolta():
 # Dynamic routing
 @app.route('/raccolta/<int:raccolta_id>')
 def raccolta(raccolta_id):
-    raccolte = []
-    raccolte = raccolte_dao.get_all_raccolte()
-    
-    # Check if the provided raccolta_id is within the valid range
-    if raccolta_id < 0 or raccolta_id > len(raccolte):
-        abort(403)  # Post not found, return a 404 error
-
-    raccolta = raccolte[raccolta_id-1]
-    # raccolta = raccolte[raccolta_id-2]
+    raccolta = raccolte_dao.get_raccolta(raccolta_id)
 
     # I also have to pass him the user to whom the post belongs, 
     # each post has a user_id field, so I use post_dao's get_user_by_id method ..
