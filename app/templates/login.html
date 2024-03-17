@@ -10,7 +10,9 @@
                     <!-- The following is the label Nickname -->
                     <label for="nicknameInput" class="form-label">Email</label>
                     <!-- The following is the input that goes under the name "nickname" -->
-                    <input type="text" class="form-control" name="email" id="emailInput">
+                    <!-- Uso le espressioni regolari per capire se l'email insierita è corretta-->
+                    <input type="text" class="form-control" name="email" id="emailInput" required pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" title="Please enter a valid email address.">
+                    <!--<input type="text" class="form-control" name="email" id="emailInput">-->
                 </div>
 
                 <div class="mb-3">
