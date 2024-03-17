@@ -58,7 +58,9 @@ def home():
                 # Then I define these new fields
                 raccolta['end_time_dt_obj'] = end_time_dt_obj
                 raccolta['nickname'] = user['nickname']
-                raccolte_new.append(raccolta)
+                # Filter only active raccolte
+                if  end_time_dt_obj > datetime.datetime.now():
+                    raccolte_new.append(raccolta)
     
     
     # I get the current time and pass it along
@@ -68,6 +70,35 @@ def home():
     # I pass the raccolte_new to the home.html template
     return render_template('home.html', raccolte_new = raccolte_new, current_time=current_time, title='Home')
 
+
+@app.route('/raccolte-chiuse')
+def raccolte_chiuse():
+    # I collect all the users and the raccolte
+    raccolte = []
+    users = []
+    raccolte = raccolte_dao.get_raccolte()
+    users = utenti_dao.get_users()
+
+    # I create a new dictionary of raccolte with the nickname of the user as the last field
+    raccolte_new = []
+    for raccolta in raccolte:
+        for user in users:
+            if raccolta['id_utente'] == user['id']:
+                # first I have to convert the string to a datetime object, so that I can compare it using Jinja
+                end_time_dt_obj = datetime.datetime.strptime(raccolta["EndTime"], "%Y-%m-%d %H:%M:%S.%f")
+                # Then I define these new fields
+                raccolta['end_time_dt_obj'] = end_time_dt_obj
+                raccolta['nickname'] = user['nickname']
+                # Filter only inactive raccolte
+                if  end_time_dt_obj <= datetime.datetime.now():
+                    raccolte_new.append(raccolta)    
+    
+    # I get the current time and pass it along
+    current_time=datetime.datetime.now()
+        
+    # Passing the current time, so that if the time's up, it displays it
+    # I pass the raccolte_new to the home.html template
+    return render_template('home.html', raccolte_new = raccolte_new, current_time=current_time, title='Home')
 
 #########################################################
 #########################################################
@@ -188,15 +219,7 @@ def new_raccolta():
 # Dynamic routing
 @app.route('/raccolta/<int:raccolta_id>')
 def raccolta(raccolta_id):
-    raccolte = []
-    raccolte = raccolte_dao.get_all_raccolte()
-    
-    # Check if the provided raccolta_id is within the valid range
-    if raccolta_id < 0 or raccolta_id > len(raccolte):
-        abort(403)  # Post not found, return a 404 error
-
-    raccolta = raccolte[raccolta_id-1]
-    # raccolta = raccolte[raccolta_id-2]
+    raccolta = raccolte_dao.get_raccolta(raccolta_id)
 
     # I also have to pass him the user to whom the post belongs, 
     # each post has a user_id field, so I use post_dao's get_user_by_id method ..
@@ -217,8 +240,7 @@ def delete_raccolta_route(id):
     # This part depends on how you associate raccolte with users in your database
     # For demonstration, let's assume you have a function get_raccolta_creator_id that returns the creator's ID given a raccolta ID
     raccolta = raccolte_dao.get_raccolta(id)
-    creator_id = utenti_dao.get_user_by_id(raccolta['id'])
-    raccolta = raccolte_dao.get_raccolta(id)
+    creator = utenti_dao.get_user_by_id(raccolta['id_utente'])
     
 
     # Ensure that your deletion route (/delete_raccolta/<int:id>) is secure, especially since it's using a POST method. 
@@ -232,7 +254,7 @@ def delete_raccolta_route(id):
         flash('You are not authorized to delete this post.')
         return redirect(url_for('home'))
 
-    if flask_login.current_user.id != creator_id:
+    if flask_login.current_user.id != creator['id']:
         flash('You are not authorized to delete this post.')
         return redirect(url_for('home'))
 

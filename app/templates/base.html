@@ -44,6 +44,9 @@
                         <a class="nav-link" href="{{ url_for('home') }}">Home</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('raccolte_chiuse') }}">Raccolte chiuse</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('about') }}">About</a>
                     </li>
                     {% if current_user.is_authenticated %}
