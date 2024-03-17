@@ -8,7 +8,7 @@
         <form action="/signup" method="POST" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="nicknameInput" class="form-label">Nickname</label>
-                <input type="text" class="form-control" name="nickname" id="nicknameInput">
+                <input type="text" class="form-control" required minlength="5" maxlength="30" name="nickname" id="nicknameInput">
             </div>
             <div class="mb-3">
                 <label for="emailInput" class="form-label">Email</label>
@@ -18,7 +18,7 @@
             <div class="mb-3">
                 <label for="passwordInput" class="form-label">Password</label>
                 <input type="password" class="form-control" name="password" id="passwordInput">
-                <div id="passwordHelp" class="form-text">Non condivideremo mai la tua password con nessun altro.</div>
+                <div id="passwordHelp" class="form-text" required minlength="8" maxlength="30">Non condivideremo mai la tua password con nessun altro.</div>
             </div>
             <button type="submit" class="btn btn-primary">Registrati</button>
         </form>
