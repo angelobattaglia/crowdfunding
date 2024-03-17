@@ -1,40 +1,46 @@
 {% extends 'base.html' %}
 {% block content %}
     {% if not current_user.is_authenticated %}
-        <a href="/">Torna indietro</a>
-        <div class="col-4 offset-md-4 bg-light p-4 border rounded">
-            <!-- The following is the action "/login" which in the app.py is @app.route('/login') -->
+        <div class="container mt-5"> <!-- Adds a top margin and centers content -->
 
-            <form action="/login" method="POST" enctype="multipart/form-data">
-                <div class="mb-3">
-                    <!-- The following is the label Nickname -->
-                    <label for="nicknameInput" class="form-label">Email</label>
-                    <!-- The following is the input that goes under the name "nickname" -->
-                    <!-- Uso le espressioni regolari per capire se l'email insierita è corretta-->
-                    <!-- 
-                        IMPORTANTE usare type="email" perché il tipo di input dell'e-mail è ancora impostato su type="text", che potrebbe non utilizzare completamente 
-                        la convalida integrata del browser per gli indirizzi e-mail. 
-                        Per migliorare la convalida e garantire che funzioni in modo efficace, è necessario modificare il "type" di input per l'e-mail da "text" a "email". 
-                        Questa modifica non solo applica la convalida del modello, ma sfrutta anche le capacità intrinseche del browser per convalidare gli indirizzi email.
-                        La modifica di type="text" in type="email" indica al browser che l'input è specifico per un indirizzo email.
-                        Questa modifica fornisce un doppio livello di convalida: uno tramite il meccanismo di convalida email nativo del browser 
-                        e un altro tramite il pattern regex fatto ad hoc.
-                    -->
-                    <input type="email" class="form-control" name="email" id="emailInput" required pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" title="Please enter a valid email address.">
-                    <!-- Il seguente è quello che usavo prima-->
-                    <!--<input type="text" class="form-control" name="email" id="emailInput">-->
+                <div class="d-flex justify-content-start mb-4"> <!-- Ensures button is aligned to the start and adds bottom margin -->
+                    <a href="/" class="btn btn-primary">Torna indietro</a>
                 </div>
 
-                <div class="mb-3">
-                    <!-- The following is the label -->
-                    <label for="passwordInput" class="form-label">Password</label>
-                    <!-- The following is the input that goes under the name "password" -->
-                    <input type="password" class="form-control" name="password" id="passwordInput">
-                    <div id="passwordHelp" class="form-text">Non condivideremo mai la tua password con nessun altro.</div>
+                <div class="col-4 offset-md-4 bg-light p-4 border rounded">
+                    <!-- The following is the action "/login" which in the app.py is @app.route('/login') -->
+
+                    <form action="/login" method="POST" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <!-- The following is the label Nickname -->
+                            <label for="nicknameInput" class="form-label">Email</label>
+                            <!-- The following is the input that goes under the name "nickname" -->
+                            <!-- Uso le espressioni regolari per capire se l'email insierita è corretta-->
+                            <!-- 
+                                IMPORTANTE usare type="email" perché il tipo di input dell'e-mail è ancora impostato su type="text", che potrebbe non utilizzare completamente 
+                                la convalida integrata del browser per gli indirizzi e-mail. 
+                                Per migliorare la convalida e garantire che funzioni in modo efficace, è necessario modificare il "type" di input per l'e-mail da "text" a "email". 
+                                Questa modifica non solo applica la convalida del modello, ma sfrutta anche le capacità intrinseche del browser per convalidare gli indirizzi email.
+                                La modifica di type="text" in type="email" indica al browser che l'input è specifico per un indirizzo email.
+                                Questa modifica fornisce un doppio livello di convalida: uno tramite il meccanismo di convalida email nativo del browser 
+                                e un altro tramite il pattern regex fatto ad hoc.
+                            -->
+                            <input type="email" class="form-control" name="email" id="emailInput" required pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" title="Please enter a valid email address.">
+                            <!-- Il seguente è quello che usavo prima-->
+                            <!--<input type="text" class="form-control" name="email" id="emailInput">-->
+                        </div>
+
+                        <div class="mb-3">
+                            <!-- The following is the label -->
+                            <label for="passwordInput" class="form-label">Password</label>
+                            <!-- The following is the input that goes under the name "password" -->
+                            <input type="password" class="form-control" name="password" id="passwordInput">
+                            <div id="passwordHelp" class="form-text">Non condivideremo mai la tua password con nessun altro.</div>
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-3">Accedi</button>
+                        <small>Non hai ancora un account? <a href="/signup">Registrati</a></small>
+                    </form>
                 </div>
-                <button type="submit" class="btn btn-primary mt-3">Accedi</button>
-                <small>Non hai ancora un account? <a href="/signup">Registrati</a></small>
-            </form>
         </div>
     {% endif %}
 {% endblock %}

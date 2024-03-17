@@ -3,7 +3,12 @@
 {% block signup_active %}active{% endblock %}
 
 {% block content %}
-    <a href="/">Torna indietro</a>
+<div class="container mt-5"> <!-- Adds a top margin and centers content -->
+
+    <div class="d-flex justify-content-start mb-4"> <!-- Ensures button is aligned to the start and adds bottom margin -->
+        <a href="/" class="btn btn-primary">Torna indietro</a>
+    </div>
+
     <div class="col-4 offset-md-4 bg-light p-4 border rounded">
         <form action="/signup" method="POST" enctype="multipart/form-data">
             <div class="mb-3">
@@ -25,4 +30,6 @@
             <button type="submit" class="btn btn-primary">Registrati</button>
         </form>
     </div>
+
+</div>
 {% endblock %}
