@@ -11,7 +11,17 @@
                     <label for="nicknameInput" class="form-label">Email</label>
                     <!-- The following is the input that goes under the name "nickname" -->
                     <!-- Uso le espressioni regolari per capire se l'email insierita è corretta-->
-                    <input type="text" class="form-control" name="email" id="emailInput" required pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" title="Please enter a valid email address.">
+                    <!-- 
+                        IMPORTANTE usare type="email" perché il tipo di input dell'e-mail è ancora impostato su type="text", che potrebbe non utilizzare completamente 
+                        la convalida integrata del browser per gli indirizzi e-mail. 
+                        Per migliorare la convalida e garantire che funzioni in modo efficace, è necessario modificare il "type" di input per l'e-mail da "text" a "email". 
+                        Questa modifica non solo applica la convalida del modello, ma sfrutta anche le capacità intrinseche del browser per convalidare gli indirizzi email.
+                        La modifica di type="text" in type="email" indica al browser che l'input è specifico per un indirizzo email.
+                        Questa modifica fornisce un doppio livello di convalida: uno tramite il meccanismo di convalida email nativo del browser 
+                        e un altro tramite il pattern regex fatto ad hoc.
+                    -->
+                    <input type="email" class="form-control" name="email" id="emailInput" required pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" title="Please enter a valid email address.">
+                    <!-- Il seguente è quello che usavo prima-->
                     <!--<input type="text" class="form-control" name="email" id="emailInput">-->
                 </div>
 
