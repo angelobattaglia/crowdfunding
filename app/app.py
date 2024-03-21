@@ -31,10 +31,17 @@ import models
 import utenti_dao
 import raccolte_dao
 
+## Here I call these functions for the creation of the DB tables at startup time
+from table_creation import create_table_donazioni, create_table_raccolte, create_table_utenti
+create_table_utenti()
+create_table_raccolte()
+create_table_donazioni()
+
 # create the application
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'gematria'
+
 
 # This is for login_manager 
 login_manager = LoginManager()
