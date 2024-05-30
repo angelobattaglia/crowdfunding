@@ -19,7 +19,7 @@
                 <!-- Frontend Validation, if the email doesn't match the pattern of a typical email -->
                 <label for="emailInput" class="form-label">Email</label>
                 <!--<input type="text" class="form-control" name="email" id="emailInput">-->
-                <input type="email" class="form-control" name="email" id="emailInput" required pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" title="Please enter a valid email address.">
+                <input type="email" class="form-control" required minlength="6" maxlength="30" name="email" id="emailInput" required pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" title="Please enter a valid email address.">
                 <div id="passwordHelp" class="form-text">Non condivideremo mai la tua email con nessun altro.</div>
             </div>
             <div class="mb-3">
